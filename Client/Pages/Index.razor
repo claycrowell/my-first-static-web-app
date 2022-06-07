@@ -1,7 +1,19 @@
 ﻿@page "/"
+@using System.Net.Http
+@inject NavigationManager navMgr
 
 <PageTitle>Index</PageTitle>
 
-<h1>Hello, world!</h1>
+<h1>@Message</h1>
 
 Welcome to your new app.
+
+@code {
+    private string Message = "Hello";
+
+    protected override  async Task OnInitializedAsync()
+    {
+        var client = new HttpClient();
+        Message = await client.GetStringAsync("http://localhost:7071/api/message?name=Clay");
+    }
+}
