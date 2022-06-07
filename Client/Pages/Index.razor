@@ -1,19 +1,25 @@
 ﻿@page "/"
 @using System.Net.Http
-@inject NavigationManager navMgr
+@inject NavigationManager _navMgr
+@inject ILogger<Index> _logger;
 
 <PageTitle>Index</PageTitle>
 
 <h1>@Message</h1>
 
-Welcome to your new app.
+Welcome to your new app.<br>
+Base Url: @BaseUrl
 
 @code {
     private string Message = "Hello";
+    private string BaseUrl;
 
     protected override  async Task OnInitializedAsync()
     {
         var client = new HttpClient();
-        Message = await client.GetStringAsync("http://localhost:7071/api/message?name=Clay");
+        BaseUrl = _navMgr.BaseUri;
+        _logger.LogInformation($"Setting BaseAddress to {BaseUrl}");
+        client.BaseAddress = new Uri(BaseUrl);
+        Message = await client.GetStringAsync("/api/message?name=Clay");
     }
 }
